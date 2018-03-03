@@ -1,0 +1,63 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.10.RELEASE'
+    }
+
+    repositories{
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+group 'com.example'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply from: 'wsdl2java.gradle'
+apply plugin: 'org.springframework.boot'
+
+sourceCompatibility = 1.8
+
+springBoot {
+    mainClass = 'com.example.Application'
+}
+
+repositories{
+
+    mavenCentral()
+    flatDir {
+        dirs "${buildDir}/libs"
+    }
+    flatDir {
+        dirs 'tmp'
+    }
+}
+
+dependencies {
+
+    compile ("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    compile "org.springframework.boot:spring-boot-starter-log4j2:$springBootVersion"
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.4"
+
+    compile 'org.apache.cxf:cxf-api:2.7.18'
+    compile 'org.apache.cxf:cxf-tools-wsdlto-core:3.2.2'
+    compile 'org.apache.cxf:cxf-rt-frontend-jaxws:3.2.2'
+    compile 'commons-dbcp:commons-dbcp:1.4'
+    compile 'commons-codec:commons-codec:1.11'
+    compile 'org.apache.cxf:cxf-rt-bindings-soap:3.2.2'
+    compile 'org.apache.cxf:cxf-rt-transports-http:3.2.2'
+    compile 'org.apache.cxf:cxf-rt-rs-extension-providers:3.2.2'
+    compile 'wsdl4j:wsdl4j:1.6.3'
+    compile 'com.sun.xml.bind:jaxb-xjc:2.3.0'
+    compile 'org.slf4j:slf4j-log4j12:1.7.25'
+    compile files('build/lib/wsdlToJar-1.0.jar')
+
+    testCompile 'org.springframework:org.springframework.test:3.2.0.RELEASE'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile 'javax.servlet:servlet-api:4.0'
+
+}
